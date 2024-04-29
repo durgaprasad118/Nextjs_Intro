@@ -1,35 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-
-export function GET(req: NextRequest) {
-  // do the validation here
-  // db hit here
-
-  return NextResponse.json({
-    name: "dp",
-    email: "dp@gmail.com",
-  });
+import client from "@/db";
+export async function GET(req: NextRequest) {
+  const user = await client.user.findFirst();
+  return NextResponse.json(user);
 }
-
-// app.get("api/user", (req, res) => {
-//   return res.json({
-//     name: "dp",
-//     emali: "dp@gmail.com",
-//   });
-// });
-//
 
 export async function POST(req: NextRequest) {
   try {
-    //BODY
     const body = await req.json();
-    // headers
-    const authHeaders = req.headers.get("authorization");
-    console.log(authHeaders);
-    // Query Params
-    const qp = req.nextUrl.searchParams.get("a");
-    console.log(qp);
+    const { email, password } = body;
+    const existingUser = await client.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    if (existingUser) {
+      return NextResponse.json({
+        message: "You already have an account signin",
+      });
+    }
+    const newUser = await client.user.create({
+      data: {
+        email: email,
+        password: password,
+      },
+    });
     return NextResponse.json({
-      data: body,
+      id: newUser.id,
+      name: newUser.email,
     });
   } catch (error) {
     console.log(error);

@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 interface InputProps {
   placeholder: string;
@@ -10,13 +11,12 @@ interface InputProps {
 async function postData(email: string, password: string) {
   try {
     const { data } = await axios.post(
-      "http://localhost:3000/api/user?a=2",
+      "http://localhost:3000/api/user",
       {
-        body: {
-          email: email,
-          password: password,
-        },
+        email: email,
+        password: password,
       },
+
       {
         headers: {
           Authorization: "Bearer tokeeeennnn",
@@ -47,6 +47,7 @@ const InputWithLabel = ({
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const router = useRouter();
   return (
     <div className="flex items-center  justify-center w-screen h-screen  ">
       <div className="border border-gray-300 shadow-sm w-1/3  rounded-lg px-4 py-2 flex items-center flex-col justify-center gap-10">
@@ -67,6 +68,7 @@ const Signin = () => {
         <button
           onClick={() => {
             postData(email, pass);
+            router.push("/");
           }}
           className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
         >

@@ -2,7 +2,7 @@ import axios from "axios";
 
 async function fetchData() {
   const { data } = await axios.get("http://localhost:3000/api/user");
-  //logging this logs on terminal not on
+  console.log("data is: ", data);
   return data;
 }
 const User = async () => {
